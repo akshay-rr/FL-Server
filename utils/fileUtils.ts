@@ -14,8 +14,8 @@ export const createTaskDirectory = (taskId: number) => {
 }
 
 export const createFile = (taskId: number, fileId: number) => {
-    const minBound = 1000;
-    const maxBound = 10000;
+    const minBound = 10000;
+    const maxBound = 100000;
 
     const numCount = getRandomInt(minBound, maxBound);
 
