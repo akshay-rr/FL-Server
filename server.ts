@@ -6,6 +6,7 @@ import { addSubtaskToQueue } from './utils/queueUtils';
 import cors from 'cors';
 import http from 'http';
 import { server as webSocketServer } from 'websocket';
+import {exec} from 'child_process';
 
 const app = express();
 
@@ -49,9 +50,26 @@ app.post('/newtask', (req: Request, res: Response) => {
     res.send(JSON.stringify(appState));
 })
 
-app.post('/generateWorkers', (req: Request, res: Response) => {
+app.post('/generateworkers', (req: Request, res: Response) => {
     console.log(req.body);
-    res.send('Works');
+
+    const N  = parseInt(req.body.N);
+
+    for (let i = 0; i< N; i++) {
+        exec("docker run -d test_dynamofl", (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+        });
+    }
+
+    res.send(JSON.stringify(appState));
 })
 
 // Worker Endpoints
@@ -166,20 +184,8 @@ wss.on('request', (request) => {
                 appState.workers[workerId].status = 'IDLE';
                 updateAppState();
             }
-
-
-
-
-            // broadcasting message to all connected clients
-            // for(let key in wsClients) {
-            //     wsClients[key].sendUTF(message.utf8Data);
-            // }
         }
     });
-
-    // for(let key in wsClients) {
-    //     wsClients[key].sendUTF(JSON.stringify({ hello: "hello" }));
-    // }
 });
 
 const updateAppState = () => {
