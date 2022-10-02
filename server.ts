@@ -13,8 +13,7 @@ const app = express();
 let appState: AppState = {
     tasks: [],
     results: {},
-    workers: [],
-    idleWorkers: []
+    workers: []
 }
 
 const wsClients: any = {};
