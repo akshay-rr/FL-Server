@@ -30,5 +30,7 @@ export const addSubtaskToQueue = (taskId: number, fileId: number) => {
         } else {
           console.log("Success", data.MessageId);
         }
-    });
+    }).promise().then((result) => {
+        console.log('Result: ', result);
+    })
 }
